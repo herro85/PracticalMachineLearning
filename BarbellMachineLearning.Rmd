@@ -1,0 +1,32 @@
+---
+title: "BarbellMachineLearning"
+output: html_document
+---
+
+This report is for the Practical Machine Learning Project to predict the manner of users doing Barbell lifting exercise.
+The data for this project come from this source: http://groupware.les.inf.puc-rio.br/har.
+
+```{r, cache=TRUE}
+setwd("~/PracticalMachineLearning")
+library(caret)
+origTrain <- read.csv("pml-training.csv")
+origTest <- read.csv("pml-testing.csv")
+
+#inTrain <- createDataPartition(y=origTrain$classe, p=0.7, list=FALSE)
+#training <- origTrain[inTrain,]
+#testing <- origTrain[-inTrain,]
+#dim(training); dim(testing)
+
+modFit <- train(classe ~ ., method="rpart", data=origTrain)
+print(modFit$finalModel)
+
+library(rattle)
+fancyRpartPlot(modFit$finalModel)
+
+testResult <- predict(modFit,testing)
+
+table(testResult, testing$classe)
+
+answers <- predict(modFit,newdata=origTest)
+
+```
